@@ -10,7 +10,7 @@
     resource_group: "{{ resource_group }}"
     allocation_method: Static
     name: osinfrapiplb
-    domain_name_label: osansibleinfra
+    domain_name_label: "{{ infra_dns_name }}"
   register: osinfrapip
 
 - name: Infra - Create a load balancer
@@ -37,7 +37,7 @@
     load_balancer: osinfralb
     public_ip: False
 
-- name: Infra - get ssh key
+- name: Infra - get public key
   command: cat "{{ public_key }}"
   register: sshkey
 

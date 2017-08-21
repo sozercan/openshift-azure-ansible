@@ -26,12 +26,7 @@
       type: Standard_LRS
     register: osstoragepv
 
-  - name: Main - Create virtual network
-    azure_rm_virtualnetwork:
-      resource_group: "{{ resource_group }}"
-      name: osvnet
-      address_prefixes: "10.0.0.0/8"
-
+  - include: network.yaml
   - include: node.yaml
   - include: infra.yaml
   - include: master.yaml

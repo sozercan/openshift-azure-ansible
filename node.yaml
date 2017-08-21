@@ -5,13 +5,6 @@
     resource_group: "{{ resource_group }}"
     sku: Aligned
 
-- name: Node - Add subnet
-  azure_rm_subnet:
-    resource_group: "{{ resource_group }}"
-    name: osnodesubnet
-    address_prefix: "10.2.0.0/16"
-    virtual_network: osvnet
-
 - name: Node - Create virtual network interface card
   azure_rm_networkinterface:
     resource_group: "{{ resource_group }}"
@@ -20,7 +13,7 @@
     subnet: osnodesubnet
     public_ip: False
 
-- name: Node - get ssh key
+- name: Node - Get public key
   command: cat "{{ public_key }}"
   register: sshkey
 
