@@ -1,0 +1,59 @@
+- name: Node - Create an availability set
+  azure_rm_availabilityset:
+    name: osnodeas
+    location: eastus
+    resource_group: osansiblerg
+    sku: Aligned
+
+- name: Node - Add subnet
+  azure_rm_subnet:
+    resource_group: osansiblerg
+    name: osnodesubnet
+    address_prefix: "10.2.0.0/16"
+    virtual_network: osvnet
+
+- name: Node - Create virtual network interface card
+  azure_rm_networkinterface:
+    resource_group: osansiblerg
+    name: osnodenic
+    virtual_network: osvnet
+    subnet: osnodesubnet
+
+- name: Node - get ssh key
+  command: cat /app/ansible/id_rsa.pub
+  register: sshkey
+
+- name: Node - Create VM
+  azure_rm_virtualmachine:
+    resource_group: osansiblerg
+    name: osnodevm-0
+    vm_size: Standard_DS1_v2
+    admin_username: azureuser
+    ssh_password_enabled: false
+    ssh_public_keys:
+      - path: /home/azureuser/.ssh/authorized_keys
+        key_data: '{{ sshkey.stdout }}'
+    network_interfaces: osnodenic
+    os_disk_caching: ReadWrite
+    managed_disk_type: Standard_LRS
+    image:
+      offer: CentOS
+      publisher: OpenLogic
+      sku: 7.3
+      version: latest
+    data_disks:
+      - data_disk_lun: 0
+        data_disk_size_gb: 64
+        data_disk_caching: ReadWrite
+        data_disk_managed_disk_type: Standard_LRS
+
+- name: Node - Create VM Extension
+  azure_rm_virtualmachine_extension:
+    resource_group: osansiblerg
+    name: osnodevmextension
+    virtual_machine_name: osnodevm-0
+    publisher: Microsoft.Azure.Extensions
+    virtual_machine_extension_type: CustomScript
+    type_handler_version: 2.0
+    auto_upgrade_minor_version: true
+    settings: {"fileUris": ["https://raw.githubusercontent.com/sozercan/OpenShift-Azure-Terraform/master/scripts/nodePrep.sh"], "commandToExecute": "bash nodePrep.sh osstorageregistry azureuser"}
