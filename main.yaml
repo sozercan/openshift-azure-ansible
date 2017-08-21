@@ -1,34 +1,37 @@
-- name: Create Openshift Origin cluster
+- name: Create Openshift Origin cluster on Azure
   hosts: localhost
   connection: local
   gather_facts: no
 
+  vars_files:
+    - vars.yaml
+
   tasks:
   - name: Main - Create a resource group
     azure_rm_resourcegroup:
-      name: osansiblerg
-      location: eastus
+      name: "{{ resource_group }}"
+      location: "{{ location }}"
 
   - name: Main - Create storage account for registry
     azure_rm_storageaccount:
-      resource_group: osansiblerg
-      name: osstorageregistry
+      resource_group: "{{ resource_group }}"
+      name: osstorageregistry{{ 100 | random }}
       type: Standard_LRS
     register: osstorageregistry
 
   - name: Main - Create storage account for persistent volumes
     azure_rm_storageaccount:
-      resource_group: osansiblerg
-      name: osstoragepv
+      resource_group: "{{ resource_group }}"
+      name: osstoragepv{{ 100 | random }}
       type: Standard_LRS
     register: osstoragepv
 
   - name: Main - Create virtual network
     azure_rm_virtualnetwork:
-      resource_group: osansiblerg
+      resource_group: "{{ resource_group }}"
       name: osvnet
       address_prefixes: "10.0.0.0/8"
 
-  - include: master.yaml
   - include: node.yaml
   - include: infra.yaml
+  - include: master.yaml
