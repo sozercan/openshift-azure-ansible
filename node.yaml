@@ -18,6 +18,7 @@
     name: osnodenic
     virtual_network: osvnet
     subnet: osnodesubnet
+    public_ip: False
 
 - name: Node - get ssh key
   command: cat /app/ansible/id_rsa.pub
@@ -29,6 +30,7 @@
     name: osnodevm-0
     vm_size: Standard_DS1_v2
     admin_username: azureuser
+    availability_set: osnodeas
     ssh_password_enabled: false
     ssh_public_keys:
       - path: /home/azureuser/.ssh/authorized_keys

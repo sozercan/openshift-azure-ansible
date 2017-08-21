@@ -14,12 +14,14 @@
       resource_group: osansiblerg
       name: osstorageregistry
       type: Standard_LRS
+    register: osstorageregistry
 
   - name: Main - Create storage account for persistent volumes
     azure_rm_storageaccount:
       resource_group: osansiblerg
       name: osstoragepv
       type: Standard_LRS
+    register: osstoragepv
 
   - name: Main - Create virtual network
     azure_rm_virtualnetwork:
