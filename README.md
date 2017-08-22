@@ -1,4 +1,4 @@
-# openshift-azure-ansible
+# Deploy OpenShift Origin on Azure using Ansible
 
 
 `git clone -b openshift https://github.com/sozercan/ansible.git`
