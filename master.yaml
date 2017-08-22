@@ -74,7 +74,7 @@
         data_disk_size_gb: "{{ data_disk_size }}"
         data_disk_caching: ReadWrite
         data_disk_managed_disk_type: Standard_LRS
-    register: osmastervm
+  register: osmastervm
 
 - name: Masters - Create VM Extension
   azure_rm_virtualmachine_extension:
@@ -85,4 +85,4 @@
     virtual_machine_extension_type: CustomScript
     type_handler_version: 2.0
     auto_upgrade_minor_version: true
-    settings: {'fileUris': ['{{ master_prep_script }}', '{{ deploy_openshift_script }}'], 'commandToExecute': 'bash masterPrep.sh {{ osstorageregistry.state.name }} {{ vm_username }} && bash deployOpenShift.sh {{ vm_username }} {{ openshift_initial_password }} {{ privatekey | b64encode }} {{ osmastervm.state.name }} {{ osmasterpip.state.dns_settings.fqdn }} {{ osmasterpip.state.ip_address }} {{ osinfravm.state.name }} {{ osnodevm.state.name }} {{ node_vm_count }} {{ infra_vm_count }} {{ master_vm_count }} {{ osinfrapip.state.ip_address}}.xip.io {{ osstorageregistry.state.name }} {{ osstorageregistry.state.primary_key }} {{ azure_tenant_id }} {{azure_subscription_id}} {{ azure_client_id }} {{ azure_client_secret }} {{ resource_group }} {{ location }} {{ osstoragepv.state.name }} {{ osstoragepv.state.primary_key }}'}
+    settings: {'fileUris': ['{{ master_prep_script }}', '{{ deploy_openshift_script }}'], 'commandToExecute': 'bash masterPrep.sh {{ osstorageregistry.state.name }} {{ vm_username }} && bash deployOpenShift.sh {{ vm_username }} {{ openshift_initial_password }} {{ privatekey.stdout | b64encode }} osmastervm {{ osmasterpip.state.dns_settings.fqdn }} {{ osmasterpip.state.ip_address }} osinfravm osnodevm {{ node_vm_count }} {{ infra_vm_count }} {{ master_vm_count }} {{ osinfrapip.state.ip_address}}.xip.io {{ osstorageregistry.state.name }} {{ osstorageregistry.state.primary_key }} {{ azure_tenant_id }} {{azure_subscription_id}} {{ azure_client_id }} {{ azure_client_secret }} {{ resource_group }} {{ location }} {{ osstoragepv.state.name }} {{ osstoragepv.state.primary_key }}'}
