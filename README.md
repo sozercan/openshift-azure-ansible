@@ -19,4 +19,6 @@ export AZURE_SECRET="<...>"
 export AZURE_TENANT="<...>"
 ```
 
+Rename `vars.yaml.template` to `vars.yaml` and edit accordingly
+
 `ansible-playbook main.yaml`
